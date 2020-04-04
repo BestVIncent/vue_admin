@@ -1,7 +1,12 @@
 import axios from 'axios'
+import storageUtil from '@/util/localStorageUtil'
 // 全局请求地址
-const BASE_URL = 'http://127.0.0.1:8888/api/private/v1/'
+const BASE_URL = 'http://localhost:8888/api/private/v1/'
 axios.defaults.baseURL = BASE_URL
+axios.interceptors.request.use(config => {
+  config.headers.Authorization = storageUtil.read('token')
+  return config
+})
 /*
 ajax请求封装模块
 @return: promise对象(异步返回数据response.data)
@@ -15,7 +20,6 @@ export default function ajax (url, data = {}, type = 'GET') {
       Object.keys(data).forEach(key => {
         dataStr += key + '=' + data[key] + '&'
       })
-      console.log(dataStr)
       if (dataStr !== '') {
         dataStr = dataStr.substring(0, dataStr.lastIndexOf('&'))
         url = url + '?' + dataStr
@@ -26,7 +30,7 @@ export default function ajax (url, data = {}, type = 'GET') {
     } else if (type === 'DELETE') {
       promise = axios.delete(url)
     } else if (type === 'PUT') {
-      promise = axios.put(url)
+      promise = axios.put(url, data)
     }
     // 进行回调处理
     promise.then((response) => {

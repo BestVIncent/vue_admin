@@ -4,7 +4,9 @@ import Login from '../views/login/Login'
 import Register from '../views/login/Register'
 import Index from '@/views/Index'
 import Home from '@/views/home/Home'
-import storageUtil from '@/util/storageUtil'
+import storageUtil from '@/util/localStorageUtil'
+import Welcome from '@/views/home/Welcome'
+import Users from '@/views/home/user/Users'
 
 Vue.use(VueRouter)
 
@@ -20,10 +22,21 @@ const routes = [
   {
     path: '/home',
     component: Home,
+    redirect: '/home/welcome',
     meta: {
       title: '首页-后台管理',
       auth: true
-    }
+    },
+    children: [
+      {
+        path: 'welcome',
+        component: Welcome
+      },
+      {
+        path: 'users',
+        component: Users
+      }
+    ]
   },
   {
     path: '/login',

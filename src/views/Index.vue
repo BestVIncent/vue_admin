@@ -2,7 +2,7 @@
   <div>
     <div class="jumbotron">
       <h1>Hi,欢迎访问</h1><br>
-      <p>这是一个基于Vue+Element+Bootstrap开发的示例网站</p><br>
+      <p>这是一个基于Bootstrap开发的示例页面</p><br>
       <p><a class="btn btn-primary btn-lg" role="button" @click="$router.push('/login')">探索更多</a></p>
     </div>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 export default {
-  name: 'home'
+  name: 'Index'
 }
 </script>
 

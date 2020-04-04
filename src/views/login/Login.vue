@@ -19,7 +19,6 @@
           <el-button type="primary" @click="login">立即登陆</el-button>
           <el-button type="info" @click="$router.push('/register')">注册帐号</el-button>
         </el-form-item>
-
       </el-form>
       <a href="#" @click="$router.back()">返回首页</a>
     </el-card>
@@ -28,14 +27,14 @@
 
 <script>
 import { login } from '@/api'
-import storageUtil from '@/util/storageUtil'
+import storageUtil from '@/util/localStorageUtil'
 export default {
   name: 'Login',
   data () {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456'
       },
       loginRules: { // 登陆表单校验规则
         username: [
