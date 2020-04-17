@@ -6,7 +6,9 @@ import Index from '@/views/Index'
 import Home from '@/views/home/Home'
 import storageUtil from '@/util/localStorageUtil'
 import Welcome from '@/views/home/Welcome'
-import Users from '@/views/home/user/Users'
+import Users from '@/views/user/Users'
+import Roles from '@/views/permission/Roles'
+import Rights from '@/views/permission/Rights'
 
 Vue.use(VueRouter)
 
@@ -35,6 +37,14 @@ const routes = [
       {
         path: 'users',
         component: Users
+      },
+      {
+        path: 'rights',
+        component: Rights
+      },
+      {
+        path: 'roles',
+        component: Roles
       }
     ]
   },

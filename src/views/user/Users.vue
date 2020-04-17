@@ -36,7 +36,7 @@
                   <el-button type="primary" icon="el-icon-edit" circle @click="showUpdateUserDialog(scope.row.id)"></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="分配角色" placement="top" :enterable="false">
-                  <el-button type="warning" icon="el-icon-setting" circle @click="showChangeRoleDialog(scope.row.id)"></el-button>
+                  <el-button type="warning" icon="el-icon-setting" circle @click="showSetRoleDialog(scope.row)"></el-button>
                 </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="删除用户" placement="top" :enterable="false">
                   <el-button type="danger" icon="el-icon-delete" circle @click="delUser(scope.row.id)"></el-button>
@@ -97,11 +97,37 @@
         <el-button @click="addUserDialog=false">取消</el-button>
       </span>
     </el-dialog>
+    <!--分配角色对话框-->
+    <el-dialog title="分配角色" :visible.sync="setRoleDialog" width="25%" @close="setRoleDialogClosed">
+      <div class="setRoleClass">
+        <p>当前用户:{{userInfo.username}}</p>
+        <p>当前角色:{{userInfo.role_name}}</p>
+        <p>
+        <el-select v-model="selectedRoleId" placeholder="请选择">
+          <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id">
+          </el-option>
+        </el-select>
+        </p>
+      </div>
+      <span slot="footer">
+        <el-button type="primary" @click="submitSetRole">确定</el-button>
+        <el-button @click="setRoleDialogClosed">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { addUser, deleteUser, getUser, getUserList, updateUser, updateUserState } from '@/api'
+import {
+  addUser,
+  deleteUser,
+  getRoleList,
+  getUser,
+  getUserList,
+  updateUser,
+  updateUserRole,
+  updateUserState
+} from '@/api'
 import { emailValidator, mobileValidator, passwordValidator, usernameValidator } from '@/util/validatorRulesUtil'
 
 export default {
@@ -118,6 +144,7 @@ export default {
       },
       total: 0,
       userList: [],
+      roleList: [],
       addUserDialog: false,
       addUserForm: {
         username: '',
@@ -140,12 +167,15 @@ export default {
         ]
       },
       updateUserDialog: false,
+      setRoleDialog: false,
+      selectedRoleId: '',
       updateUserForm: {
         id: '',
         username: '',
         email: '',
         mobile: ''
-      }
+      },
+      userInfo: {}
     }
   },
   methods: {
@@ -235,7 +265,31 @@ export default {
         this.$message.info('取消删除')
       })
     },
-    showChangeRoleDialog (userId) {
+    async showSetRoleDialog (userInfo) {
+      const res = await getRoleList()
+      if (res.meta.status !== 200) {
+        return this.$message.error('加载失败')
+      }
+      this.roleList = res.data
+      this.setRoleDialog = true
+      this.userInfo = userInfo
+    },
+    async submitSetRole () {
+      if (!this.selectedRoleId) {
+        return this.$message.error('请先选择角色!')
+      }
+      const res = await updateUserRole(this.userInfo.id, this.selectedRoleId)
+      if (res.meta.status !== 200) {
+        return this.$message.error('更新失败')
+      }
+      this.$message.success('更新成功')
+      this.getUserList()
+      this.setRoleDialogClosed()
+    },
+    setRoleDialogClosed () {
+      this.setRoleDialog = false
+      this.selectedRoleId = ''
+      this.userInfo = {}
     }
   }
 }
@@ -247,5 +301,8 @@ export default {
 }
 .el-card {
 
+}
+.setRoleClass {
+  text-align: left;
 }
 </style>
